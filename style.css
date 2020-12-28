@@ -1,0 +1,107 @@
+html {
+    box-sizing: border-box;
+}
+
+*, *:after, *:before {
+    box-sizing: inherit;
+}
+
+:root {
+    --primaryColor: silver;
+    --screenColor: hsla(31, 82%, 57%, 0.281);
+    --mainKeys: hsl(0, 0%, 30%);
+    --topKeys: hsl(196, 100%, 35%);
+    --equalKey: #EB9336;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100vw;
+    height: 100vh;
+    background: hsla(196, 100%, 35%, 0.322);;
+}
+
+.calculator {
+    background: var(--primaryColor);
+    height: 80vh;
+    width: 50vh;
+    display: grid;
+    grid-template-columns: repeat(4, 25%);
+    grid-template-rows: 25% repeat(5, 15%);
+    justify-items: center;
+    align-items: center;
+    border: 5px solid black;
+    border-radius: 10px;
+}   
+
+.key {
+    background: var(--mainKeys);
+    font-size: 3rem;
+    font-weight: 800;
+    width: 80%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid black;
+    box-shadow: 0 0 3px 1px black;
+    border-radius: 5px;
+}
+
+.key:hover {
+    opacity: 85%;
+    cursor: pointer;
+}
+
+.key:active {
+    box-shadow: 0 0 0 0;
+}
+
+#screen {
+    grid-area: 1 / 1 / 1 / 5;
+    background: var(--screenColor);
+    height: 80%;
+    width: 95%;
+    font-size: 8rem;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    border: 3px solid black;
+    border-radius: 5px;
+}
+
+/* have to escape numbered classes with \unicode */
+#\30 {
+    grid-area: 6 / 1 / 7 / 3;
+    width: 90%;
+}
+
+#multiply {
+    padding-top: 15px;
+}
+
+#dot {
+    padding-bottom: 25px;
+}
+
+#equals {
+    grid-area: 5 / 4 / 7 / 5;
+    height: 90%;
+    background: var(--equalKey);
+}
+
+.top {
+    background: var(--topKeys);
+}
+
+@media all and (max-width:600px) {
+   #reset { font-size: 1rem;}
+   #screen { font-size: 5rem;}
+}
+
+@media all and (max-height:600px) {
+    #reset { font-size: 1rem;}
+    #screen { font-size: 5rem;}
+ }

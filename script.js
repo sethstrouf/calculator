@@ -2,7 +2,18 @@ const displayer = {
     screen : document.querySelector("#screen"),
 
     updateScreen : function(message) {
+        if(receiver.hasDot===true)
+             message = Number(message).toFixed(2);
+        if(message.toString().length > 9) {
+            this.screen.style.fontSize = "2.5rem";
+            this.screen.style.color = "red";
+            this.screen.style.justifyContent = "center";
+            message = "ERROR: ANSWER TOO LONG";
             this.screen.textContent = message;
+            processor.clear();
+        } else {        
+        this.screen.textContent = message;
+        }
     },
 
     turnOnBorder: function(id) {
@@ -28,6 +39,10 @@ const receiver = {
         this.keys.forEach(key => {
             key.addEventListener("click", function() {
                 let message = processor.processInput(key.textContent);
+                //this style reset is so I can have a red error message when answer is too long
+                displayer.screen.style.fontSize = "8rem";
+                displayer.screen.style.color = "black";
+                displayer.screen.style.justifyContent = "flex-end";
                 displayer.updateScreen(message);
             });
         });
@@ -42,6 +57,13 @@ const processor = {
     toMult : false,
     toDiv : false,
     firstNum : true,
+
+    turnOffBools : function() {
+        toAdd = false;
+        toSub = false;
+        toMult =  false;
+        toDiv = false;
+    },
 
     processInput : function(symbol) {
         if(symbol==="+") {
@@ -93,11 +115,9 @@ const processor = {
         this.answer = 0;
         receiver.hasDot = false;
         this.firstNum = true;
-        this.toAdd = false;
-        this.toSub = false;
-        this.toMult = false;
-        this.toDiv = false;
-        return "Cleared";
+        this.turnOffBools();
+
+        return "";
     },
 
     backspace : function () {
@@ -111,10 +131,8 @@ const processor = {
         displayer.turnOffBorders();
         displayer.turnOnBorder("add");
         receiver.hasDot = false;
+        this.turnOffBools();
         this.toAdd = true;
-        this.toSub = false;
-        this.toMult = false;
-        this.toDiv = false;
 
         this.answer += Number(this.inputArray.join(""));
         this.inputArray = [];
@@ -125,10 +143,8 @@ const processor = {
         displayer.turnOffBorders();
         displayer.turnOnBorder("subtract");
         receiver.hasDot = false;
-        this.toAdd = false;
+        this.turnOffBools();
         this.toSub = true;
-        this.toMult = false;
-        this.toDiv = false;
 
         if(this.firstNum===true) {
             this.firstNum = false;
@@ -144,10 +160,8 @@ const processor = {
         displayer.turnOffBorders();
         displayer.turnOnBorder("multiply");
         receiver.hasDot = false;
-        this.toAdd = false;
-        this.toSub = false;
+        this.turnOffBools();
         this.toMult = true;
-        this.toDiv = false;
 
         if(this.firstNum === true) {
             this.answer = 1;
@@ -162,9 +176,7 @@ const processor = {
         displayer.turnOffBorders();
         displayer.turnOnBorder("divide");
         receiver.hasDot = false;
-        this.toAdd = false;
-        this.toSub = false;
-        this.toMult = false;
+        this.turnOffBools();
         this.toDiv = true;
 
         if(this.firstNum === true) {

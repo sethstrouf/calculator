@@ -1,6 +1,7 @@
 const displayer = {
     screen : document.querySelector("#screen"),
 
+    /* Limit decimal place to two digits, display error, or content */
     updateScreen : function(message) {
         if(receiver.hasDot===true)
              message = Number(message).toFixed(2);
@@ -8,7 +9,9 @@ const displayer = {
             this.screen.style.fontSize = "2.5rem";
             this.screen.style.color = "red";
             this.screen.style.justifyContent = "center";
-            message = "ERROR: ANSWER TOO LONG";
+            /* Otherwise this won't print because the string is longer than 9 */
+            if (message !== "Can't ÷ 0!")
+                message = "ERROR: ANSWER TOO LONG";
             this.screen.textContent = message;
             processor.clear();
         } else {        
@@ -16,11 +19,13 @@ const displayer = {
         }
     },
 
+    /* Turn on blue border when button is pressed */
     turnOnBorder: function(id) {
         let button = document.getElementById(id);
         button.style.boxShadow = "0px 0px 5px 5px #0083b3";
     },
 
+    /* Turn off blue border when not active */
     turnOffBorders: function() {
         document.getElementById("add").style.boxShadow = "0px 0px 3px 1px #000000";
         document.getElementById("subtract").style.boxShadow = "0px 0px 3px 1px #000000";
@@ -79,7 +84,7 @@ const processor = {
         } else if(symbol==="Clear") {
             message = this.clear();
         } else if (symbol==="⬅") {
-            message = this.backspace(symbol);
+            message = this.backspace();
         } else if(!isNaN(symbol) || symbol===".") {
             message = this.updateArrays(symbol);
         }
@@ -87,7 +92,9 @@ const processor = {
     },
 
     updateArrays : function(symbol, r) {
+        /* Make sure there's still room on calc screen */
         if(receiver.isFirstInput===true && this.inputArray.length<9) {
+            /* Add dot to array if there isn't already one */
             if(symbol==="." && receiver.hasDot===false) {
                 this.inputArray.push(symbol);
                 receiver.hasDot = true;
@@ -96,7 +103,7 @@ const processor = {
                 this.inputArray.push(symbol);
                 message = this.inputArray.join("");
             }
-        } else if(receiver.isSecondInput===true && this.inputArray.length<9) {
+        } /* else if(receiver.isSecondInput===true && this.inputArray.length<9) {
             if(symbol==="." && receiver.hasDot===false) {
                 this.secondArray.push(symbol);
                 receiver.hasDot = true;
@@ -105,7 +112,7 @@ const processor = {
                 this.secondArray.push(symbol);
                 message = this.secondArray.join("");
             }
-        }
+        } */
         return message;
     },
 
@@ -135,6 +142,7 @@ const processor = {
         this.toAdd = true;
 
         this.answer += Number(this.inputArray.join(""));
+
         this.inputArray = [];
         return this.answer;
     },
@@ -146,11 +154,11 @@ const processor = {
         this.turnOffBools();
         this.toSub = true;
 
-        if(this.firstNum===true) {
+        if(this.firstNum === true) {
             this.firstNum = false;
             this.answer = Number(this.inputArray.join(""));
         } else {
-        this.answer -= Number(this.inputArray.join(""));
+            this.answer -= Number(this.inputArray.join(""));
         }
         this.inputArray = [];
         return this.answer;
@@ -179,16 +187,15 @@ const processor = {
         this.turnOffBools();
         this.toDiv = true;
 
+        
         if(this.firstNum === true) {
+            console.log("in loop");
             this.answer = 1;
             this.answer = Number(this.inputArray.join("")) / this.answer;
             this.firstNum = false;
             this.inputArray = [];
             return this.answer;
         }
-
-        if(Number(this.inputArray.join("")) === 0)
-            return "Can't ÷ 0!";
 
         this.answer /= Number(this.inputArray.join(""));
         this.inputArray = [];
@@ -214,13 +221,15 @@ const processor = {
             this.toMult = false;
         }
         if(this.toDiv===true) {
-            if(Number(this.inputArray.join("")) === 0)
+            if(Number(this.inputArray.join("")) === 0) {
                 return "Can't ÷ 0!";
+            }
             this.answer /= Number(this.inputArray.join(""));
             this.inputArray = [1];
             this.toDiv = false;
         }
 
+        firstNum = true;
         return this.answer;
     },
 }

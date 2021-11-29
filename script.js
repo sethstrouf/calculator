@@ -36,8 +36,6 @@ const displayer = {
 
 const receiver = {
     hasDot : false,
-    isFirstInput : true,
-    isSecondInput : false,
     keys : document.querySelectorAll(".key"),
 
     getInput : function() {
@@ -93,7 +91,7 @@ const processor = {
 
     updateArrays : function(symbol, r) {
         /* Make sure there's still room on calc screen */
-        if(receiver.isFirstInput===true && this.inputArray.length<9) {
+        if(this.inputArray.length<9) {
             /* Add dot to array if there isn't already one */
             if(symbol==="." && receiver.hasDot===false) {
                 this.inputArray.push(symbol);
@@ -103,16 +101,7 @@ const processor = {
                 this.inputArray.push(symbol);
                 message = this.inputArray.join("");
             }
-        } /* else if(receiver.isSecondInput===true && this.inputArray.length<9) {
-            if(symbol==="." && receiver.hasDot===false) {
-                this.secondArray.push(symbol);
-                receiver.hasDot = true;
-                message = this.secondArray.join("");
-            } else if (symbol>=0 && symbol <=9) {
-                this.secondArray.push(symbol);
-                message = this.secondArray.join("");
-            }
-        } */
+        }
         return message;
     },
 
@@ -187,9 +176,7 @@ const processor = {
         this.turnOffBools();
         this.toDiv = true;
 
-        
         if(this.firstNum === true) {
-            console.log("in loop");
             this.answer = 1;
             this.answer = Number(this.inputArray.join("")) / this.answer;
             this.firstNum = false;
@@ -217,7 +204,7 @@ const processor = {
         }
         if(this.toMult===true) {
             this.answer *= Number(this.inputArray.join(""));
-            this.inputArray = [1];
+            this.inputArray = [];
             this.toMult = false;
         }
         if(this.toDiv===true) {
@@ -225,11 +212,10 @@ const processor = {
                 return "Can't ÷ 0!";
             }
             this.answer /= Number(this.inputArray.join(""));
-            this.inputArray = [1];
+            this.inputArray = [];
             this.toDiv = false;
         }
 
-        firstNum = true;
         return this.answer;
     },
 }

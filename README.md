@@ -7,7 +7,8 @@ My attempts in this project:
 What I learned:
  - Much better at using objects to write cleaner code
  - Used CSS Grid effectively to create the calculator 
+ - I should comment more (I came back after a year to fix bugs)
 
 What I need to improve:
- - Still need to study more about encapsulation
- - More planning! More flow chart, pseudocode, etc. to anticipate some of the problems I faced late in coding (overuse of booleans, for example)
+ - More planning! More flow chart, pseudocode, etc. to anticipate some of 
+   the problems I faced late in coding (overuse of booleans, for example)

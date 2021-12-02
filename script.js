@@ -2,20 +2,25 @@ const displayer = {
     screen : document.querySelector("#screen"),
 
     /* Limit decimal place to two digits, display error, or content */
-    updateScreen : function(message) {
+    updateScreen : function(output) {
         if(receiver.hasDot===true)
-             message = Number(message).toFixed(2);
-        if(message.toString().length > 9) {
+             output = Number(output).toFixed(2);
+
+        if(output.toString().length > 9) {
             this.screen.style.fontSize = "2.5rem";
             this.screen.style.color = "red";
             this.screen.style.justifyContent = "center";
             /* Otherwise this won't print because the string is longer than 9 */
-            if (message !== "Can't ÷ 0!")
-                message = "ERROR: ANSWER TOO LONG";
-            this.screen.textContent = message;
+            if (output !== "Can't ÷ 0!")
+                output = "ERROR: ANSWER TOO LONG";
+            this.screen.textContent = output;
             processor.clear();
         } else {        
-        this.screen.textContent = message;
+            /* styles so it doesn't stay red after error */
+            displayer.screen.style.fontSize = "8rem";
+            displayer.screen.style.color = "black";
+            displayer.screen.style.justifyContent = "flex-end";
+            this.screen.textContent = output;
         }
     },
 
@@ -41,12 +46,8 @@ const receiver = {
     getInput : function() {
         this.keys.forEach(key => {
             key.addEventListener("click", function() {
-                let message = processor.processInput(key.textContent);
-                //this style reset is so I can have a red error message when answer is too long
-                displayer.screen.style.fontSize = "8rem";
-                displayer.screen.style.color = "black";
-                displayer.screen.style.justifyContent = "flex-end";
-                displayer.updateScreen(message);
+                let output = processor.processInput(key.textContent);
+                displayer.updateScreen(output);
             });
         });
     },
@@ -69,24 +70,24 @@ const processor = {
     },
 
     processInput : function(symbol) {
-        if(symbol==="+") {
-            return this.add();
-        } else if(symbol==="-") {
-            return this.subtract();
-        } else if(symbol==="*") {
-            return this.multiply();
-        } else if(symbol==="÷") {
-            return this.divide();
-        } else if(symbol==="=") { 
-            return this.equals();
-        } else if(symbol==="Clear") {
-            message = this.clear();
-        } else if (symbol==="⬅") {
-            message = this.backspace();
-        } else if(!isNaN(symbol) || symbol===".") {
-            message = this.updateArrays(symbol);
-        }
-            return message;
+            if (symbol==="+")
+                return this.add();
+            if(symbol==="-")
+                return this.subtract();
+            if(symbol==="*")
+                return this.multiply();
+            if(symbol==="÷")
+                return this.divide();
+            if (symbol==="⬅")
+                return this.backspace();
+            if(symbol==="=") 
+                    return this.equals();
+            if(symbol==="Clear")
+                return this.clear();
+        
+        if(!isNaN(symbol) || symbol===".") {
+            return this.updateArrays(symbol);
+        } 
     },
 
     updateArrays : function(symbol, r) {
@@ -113,7 +114,7 @@ const processor = {
         this.firstNum = true;
         this.turnOffBools();
 
-        return "";
+        return "0";
     },
 
     backspace : function () {
@@ -130,6 +131,10 @@ const processor = {
         this.turnOffBools();
         this.toAdd = true;
 
+
+        if(this.firstNum === true)
+            this.firstNum = false;
+        
         this.answer += Number(this.inputArray.join(""));
 
         this.inputArray = [];
@@ -149,6 +154,7 @@ const processor = {
         } else {
             this.answer -= Number(this.inputArray.join(""));
         }
+
         this.inputArray = [];
         return this.answer;
     },
@@ -160,10 +166,15 @@ const processor = {
         this.turnOffBools();
         this.toMult = true;
 
-        if(this.firstNum === true) {
+        if(this.firstNum === true && this.inputArray.length !== 0) {
             this.answer = 1;
             this.firstNum = false;
         }
+
+        if(this.inputArray.length === 0 && this.answer !== 0) {
+            this.inputArray.push(1)
+        }
+
         this.answer *= Number(this.inputArray.join(""));
         this.inputArray = [];
         return this.answer;
@@ -182,6 +193,10 @@ const processor = {
             this.firstNum = false;
             this.inputArray = [];
             return this.answer;
+        }
+
+        if(this.inputArray.length === 0 && this.answer !== 0) {
+            this.inputArray.push(1)
         }
 
         this.answer /= Number(this.inputArray.join(""));
@@ -220,4 +235,5 @@ const processor = {
     },
 }
 
+displayer.updateScreen(0)
 receiver.getInput();

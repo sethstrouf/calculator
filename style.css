@@ -92,6 +92,10 @@ body {
     background: var(--equalKey);
 }
 
+#clear {
+    font-size: 2rem;
+}
+
 .top {
     background: var(--topKeys);
 }
